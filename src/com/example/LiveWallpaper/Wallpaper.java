@@ -17,66 +17,38 @@ import android.view.SurfaceHolder;
 public class Wallpaper {
 
     private Resources                   mResources = null;
-    private SurfaceHolder               mSurfaceHolder = null;
     private Bitmap                      mBackgroundImage = null;
-    private int                         mSurfaceFormat = -1;
-    private int                         mSurfaceWidth = 0;
-    private int                         mSurfaceHeight = 0;
-    private boolean                     mUpdated = false;
+//    private boolean                    mUpdated = false;
 
     public Wallpaper(Resources resources, int backgroundImageId) {
         mResources =resources;
         mBackgroundImage = BitmapFactory.decodeResource(mResources, backgroundImageId);
     }
 
-    public void setSurfaceHolder(SurfaceHolder surfaceHolder) {
-        if ( mSurfaceHolder != surfaceHolder ) {
-            synchronized (this) {
-                mSurfaceHolder = surfaceHolder;
-            }
-            mUpdated = true;
-        }
-    }
+    /*public void refresh() {
+        mUpdated = true;
+    }*/
 
-    public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        setSurfaceHolder(holder);
+    public void render(SurfaceHolder surfaceHolder, int width, int height) {
+  //      if ( mUpdated ) {
 
-        if ( mSurfaceFormat != format ) {
-            mSurfaceFormat = format;
-            mUpdated = true;
-        }
-
-        if ( mSurfaceWidth != width ) {
-            mSurfaceWidth = width;
-            mUpdated = true;
-        }
-
-        if ( mSurfaceHeight != height ) {
-            mSurfaceHeight = height;
-            mUpdated = true;
-        }
-    }
-
-    public void render() {
-        if ( mUpdated ) {
-
-            assert ( mSurfaceHolder != null && mBackgroundImage != null && mSurfaceWidth != 0 && mSurfaceHeight != 0 );
+            assert ( surfaceHolder != null && mBackgroundImage != null );
 
             Canvas canvas = null;
             try {
-                canvas = mSurfaceHolder.lockCanvas();
+                canvas = surfaceHolder.lockCanvas();
                 if ( canvas != null ) {
                     Rect source = new Rect(0, 0, mBackgroundImage.getWidth(), mBackgroundImage.getHeight());
-                    Rect destination = new Rect(0, 0, mSurfaceWidth, mSurfaceHeight);
+                    Rect destination = new Rect(0, 0, width, height);
                     canvas.drawBitmap(mBackgroundImage, source, destination, null);
                 }
             } finally {
                 if(canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    surfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }
 
-            mUpdated = false;
-        }
+ //           mUpdated = false;
+ //       }
     }
 }
