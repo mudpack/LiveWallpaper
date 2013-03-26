@@ -14,7 +14,7 @@ import android.view.SurfaceHolder;
  * Time: 오후 5:49
  * To change this template use File | Settings | File Templates.
  */
-public class Wallpaper {
+public class Wallpaper implements Renderable {
 
     private Resources                   mResources = null;
     private Bitmap                      mBackgroundImage = null;
