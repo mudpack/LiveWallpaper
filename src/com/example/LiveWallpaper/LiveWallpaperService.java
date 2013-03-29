@@ -59,5 +59,11 @@ public class LiveWallpaperService extends WallpaperService {
 
             pause();
         }
+
+        @Override
+        public void onVisibilityChanged(boolean visible) {
+            super.onVisibilityChanged(visible);    //To change body of overridden methods use File | Settings | File Templates.
+            mWallpaperThread.onVisibilityChanged(visible);
+        }
     }
 }

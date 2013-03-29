@@ -18,37 +18,28 @@ public class Wallpaper implements Renderable {
 
     private Resources                   mResources = null;
     private Bitmap                      mBackgroundImage = null;
-//    private boolean                    mUpdated = false;
 
     public Wallpaper(Resources resources, int backgroundImageId) {
         mResources =resources;
         mBackgroundImage = BitmapFactory.decodeResource(mResources, backgroundImageId);
     }
 
-    /*public void refresh() {
-        mUpdated = true;
-    }*/
-
     public void render(SurfaceHolder surfaceHolder, int width, int height) {
-  //      if ( mUpdated ) {
+        assert ( surfaceHolder != null && mBackgroundImage != null );
 
-            assert ( surfaceHolder != null && mBackgroundImage != null );
-
-            Canvas canvas = null;
-            try {
-                canvas = surfaceHolder.lockCanvas();
-                if ( canvas != null ) {
-                    Rect source = new Rect(0, 0, mBackgroundImage.getWidth(), mBackgroundImage.getHeight());
-                    Rect destination = new Rect(0, 0, width, height);
-                    canvas.drawBitmap(mBackgroundImage, source, destination, null);
-                }
-            } finally {
-                if(canvas != null) {
-                    surfaceHolder.unlockCanvasAndPost(canvas);
-                }
+        Canvas canvas = null;
+        try {
+            canvas = surfaceHolder.lockCanvas();
+            if ( canvas != null ) {
+                Rect source = new Rect(0, 0, mBackgroundImage.getWidth(), mBackgroundImage.getHeight());
+                Rect destination = new Rect(0, 0, width, height);
+                canvas.drawBitmap(mBackgroundImage, source, destination, null);
             }
+        } finally {
+            if(canvas != null) {
+                surfaceHolder.unlockCanvasAndPost(canvas);
+            }
+        }
 
- //           mUpdated = false;
- //       }
     }
 }

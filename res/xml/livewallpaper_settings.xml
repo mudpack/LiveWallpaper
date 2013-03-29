@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<livewallpapersettings xmlns:android="http://schemas.android.com/apk/res/android"
-    android:title="@string/livewallpaper_settings"
-    android:key="livewallpaper_settings">
-
-</livewallpapersettings>

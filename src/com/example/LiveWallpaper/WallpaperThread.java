@@ -14,7 +14,7 @@ public class WallpaperThread extends Thread {
 
     private Wallpaper                               mWallpaper;
     private boolean                                mRun = false;
-//    private boolean                                mWait = false;
+    private boolean                                mVisible = true;
     private long                                   mPreviousTime = 0;
     private long                                   mCurrentTime = 0;
     private SurfaceHolder                           mSurfaceHolder = null;
@@ -25,22 +25,8 @@ public class WallpaperThread extends Thread {
     public WallpaperThread(Resources resources, SurfaceHolder surfaceHolder) {
         mWallpaper = new Wallpaper(resources, R.drawable.elin_3);
         mSurfaceHolder = surfaceHolder;
-        //mWait = false;
     }
-/*
-    public void setSurfaceHolder(SurfaceHolder surfaceHolder) {
-        Log.d("class WallpaperThread", "setSurfaceHolder(SurfaceHolder surfaceHolder)");
 
-        if ( mSurfaceHolder != surfaceHolder ) {
-            synchronized (this) {
-                mSurfaceHolder = surfaceHolder;
-                notify();
-            }
-        }
-
-        //mWallpaper.refresh();
-    }
-*/
     public void setSurfaceSize(int width, int height) {
         mSurfaceWidth = width;
         mSurfaceHeight = height;
@@ -49,36 +35,21 @@ public class WallpaperThread extends Thread {
             notify();
         }
     }
-    /*
-        public void onVisibilityChanged(boolean visible) {
 
-            if ( visible ) {
-                resumeRender();
-            } else {
-                pauseRender();
-            }
-        }    */
-/*
-    public void pauseRender() {
-        mWait = true;
+    // visibility = false에 따른 처리는 tick은 돌고 render()는 안돌게...
+    public void onVisibilityChanged(boolean visible) {
+
         synchronized (this) {
+            mVisible = visible;
             notify();
         }
     }
 
-    public void resumeRender() {
-        mWait = false;
-        synchronized (this) {
-            notify();
-        }
-    }
-*/
     @Override
     public synchronized void start() {
         super.start();    //To change body of overridden methods use File | Settings | File Templates.
 
         mRun = true;
-        //mWallpaper.refresh();
     }
 
     public void stopTrigger() {
@@ -108,17 +79,6 @@ public class WallpaperThread extends Thread {
             }
 
             mPreviousTime = mCurrentTime;
-/*
-            synchronized (this) {
-                if ( mWait ) {
-                    try {
-                        wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-*/
         }
     }
 
