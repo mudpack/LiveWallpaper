@@ -1,6 +1,6 @@
 package com.example.LiveWallpaper;
 
-import android.view.SurfaceHolder;
+import android.graphics.Canvas;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +10,5 @@ import android.view.SurfaceHolder;
  * To change this template use File | Settings | File Templates.
  */
 public interface Renderable {
-    public void render(SurfaceHolder surfaceHolder, int width, int height);
+    public void render(Canvas canvas, int width, int height);
 }

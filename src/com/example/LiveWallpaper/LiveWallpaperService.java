@@ -42,6 +42,8 @@ public class LiveWallpaperService extends WallpaperService {
 
         @Override
         public void onSurfaceCreated(SurfaceHolder holder) {
+            //android.os.Debug.waitForDebugger();
+
             super.onSurfaceCreated(holder);    //To change body of overridden methods use File | Settings | File Templates.
 
             resume(holder);
