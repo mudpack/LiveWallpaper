@@ -1,10 +1,14 @@
 package com.example.LiveWallpaper;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,22 +19,50 @@ import java.util.ArrayList;
  */
 public class WallpaperObjectManager {
 
+    private static final long CREATE_LEAF_DURATION = 2000;      // millisec
+    private static final long CREATE_LEAF_DURATION_VAR_1 = 300; // millisec
+
+    private HashMap<WallpaperObject.type, Bitmap>       mBitmapMap;
     private ArrayList<WallpaperObject>  mObjectList;
     private SurfaceHolder               mSurfaceHolder;
     private int                         mSurfaceWidth = 0;
     private int                         mSurfaceHeight = 0;
     private Resources                   mResources;
+    private Random                      mRandom;
+    private long                        mNextLeafCreateTime = 0;
 
     public WallpaperObjectManager(Resources resources, SurfaceHolder surfaceHolder) {
+        mBitmapMap = new HashMap<WallpaperObject.type, Bitmap>();
         mObjectList = new ArrayList<WallpaperObject>();
+        mRandom = new Random();
+
         mResources = resources;
         mSurfaceHolder = surfaceHolder;
     }
 
-    public void initialize() {
-        mObjectList.clear();
-        mObjectList.add(WallpaperObject.createInstanceFromResource(WallpaperObject.type.BACKGROUND, mResources, R.drawable.elin_3));
+    private void initBitmaps() {
+        Bitmap backgroundBitmap = BitmapFactory.decodeResource(mResources, Background.getResourceId());
+        mBitmapMap.put(WallpaperObject.type.BACKGROUND, backgroundBitmap);
+
+        Bitmap leafBitmap = BitmapFactory.decodeResource(mResources, Leaf.getResourceId());
+        leafBitmap = Bitmap.createScaledBitmap(leafBitmap, Leaf.width(), Leaf.height(), true);
+        mBitmapMap.put(WallpaperObject.type.LEAF, leafBitmap);
     }
+
+    public void initialize() {
+        initBitmaps();
+
+        mObjectList.clear();
+        createWallpaperObject(WallpaperObject.type.BACKGROUND);
+    }
+
+    private WallpaperObject createWallpaperObject(WallpaperObject.type type) {
+        WallpaperObject newObject = WallpaperObject.createInstanceFromBitmap(type, mBitmapMap.get(type));
+        mObjectList.add(newObject);
+
+        return newObject;
+    }
+
 
     public void setSurfaceSize(int width, int height) {
         mSurfaceWidth = width;
@@ -87,6 +119,17 @@ public class WallpaperObjectManager {
     }
 
     private void createLeaves(long milliseconds) {
+        if ( mNextLeafCreateTime <= 0 ) {
 
+            Leaf newLeaf = (Leaf)createWallpaperObject(WallpaperObject.type.LEAF);
+            assert( newLeaf != null );
+
+            newLeaf.initialize( mRandom.nextInt(mSurfaceWidth), 0 );
+
+            final long range = ((long)mRandom.nextInt((int)CREATE_LEAF_DURATION_VAR_1*2) - CREATE_LEAF_DURATION_VAR_1);
+            mNextLeafCreateTime = CREATE_LEAF_DURATION + range;
+        }
+
+        mNextLeafCreateTime -= milliseconds;
     }
 }

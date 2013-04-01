@@ -12,11 +12,12 @@ import android.view.SurfaceHolder;
  */
 public class WallpaperThread extends Thread {
 
+    private static final float MIN_DELTA_TIME = 1000.f / 60.f;
+
     private WallpaperObjectManager                 mWallpaperObjectManager;
     private boolean                                mRun = false;
     private boolean                                mVisible = true;
     private long                                   mPreviousTime = 0;
-    private long                                   mCurrentTime = 0;
 
     public WallpaperThread(Resources resources, SurfaceHolder surfaceHolder) {
         mWallpaperObjectManager = new WallpaperObjectManager(resources, surfaceHolder);
@@ -65,14 +66,33 @@ public class WallpaperThread extends Thread {
         }
     }
 
+    private long calcDeltaTime() {
+
+        long currentTime = System.currentTimeMillis();
+        long deltaTime = currentTime - mPreviousTime;
+
+        // max fps를 60으로 고정시키도록...
+        if ( deltaTime > MIN_DELTA_TIME ) {
+            mPreviousTime = currentTime;
+            return deltaTime;
+        } else {
+            return -1;
+        }
+    }
+
+
+
+
     @Override
     public void run() {
         mWallpaperObjectManager.initialize();
 
         while (mRun) {
-            mCurrentTime = System.currentTimeMillis();
-            final long deltaTime = mCurrentTime - mPreviousTime;
-            mPreviousTime = mCurrentTime;
+
+            final long deltaTime = calcDeltaTime();
+            if ( deltaTime == -1 ) {
+                continue;
+            }
 
             mWallpaperObjectManager.tick(deltaTime);
 

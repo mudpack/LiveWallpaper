@@ -13,6 +13,11 @@ import android.graphics.Rect;
  */
 public class Background extends WallpaperObject {
 
+
+    public static int getResourceId() {
+        return R.drawable.elin_3;
+    }
+
     public Background(Bitmap _bitmap) {
         super(type.BACKGROUND, _bitmap);
     }

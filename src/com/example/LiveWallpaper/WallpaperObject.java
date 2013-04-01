@@ -22,6 +22,18 @@ public class WallpaperObject implements Renderable {
     protected type                            mType;
     protected Bitmap                          mBitmap;
 
+    public static int getResourceId() {
+        return -1;
+    }
+
+    public static int width() {
+        return -1;
+    }
+
+    public static int height() {
+        return -1;
+    }
+
     public static WallpaperObject createInstanceFromResource(type _type, Resources resources, int id) {
         Bitmap bitmap = BitmapFactory.decodeResource(resources, id);
         return createInstanceFromBitmap(_type, bitmap);
